@@ -5,13 +5,9 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def softmax(a):
-    c = np.max(a)
-    exp_a = np.exp(a - c)  # for overflow
-    sum_exp_a = np.sum(exp_a)
-    y = exp_a / sum_exp_a
-
-    return y
+def softmax(x):
+    x = x - np.max(x, axis=-1, keepdims=True)  # For overflow
+    return np.exp(x) / np.sum(np.exp(x), axis=-1, keepdims=True)
 
 
 # 二つの確率分布が似ていると値が小さくなるような関数

@@ -47,26 +47,6 @@ class TwoLayerNet:
 
         return grads
 
-    def gradient(self, x, t):
-        # forward
-        self.loss(x, t)
-
-        # backward
-        dout = 1
-        dout = self.lastLayer.backward(dout)
-
-        layers = list(self.layers.values())
-        layers.reverse()
-        for layer in layers:
-            dout = layer.backward(dout)
-
-        # 設定
-        grads = {}
-        grads["W1"], grads["b1"] = self.layers["Affine1"].dW, self.layers["Affine1"].db
-        grads["W2"], grads["b2"] = self.layers["Affine2"].dW, self.layers["Affine2"].db
-
-        return grads
-
 
 net = TwoLayerNet(input_size=784, hidden_size=100, output_size=10)
 print(net.params["W1"].shape)
