@@ -1,5 +1,5 @@
 import numpy as np
-from common.functions import sigmoid
+from common.functions import cross_entropy_error, sigmoid, softmax
 
 
 class Relu:
@@ -70,4 +70,30 @@ class Affine:
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
 
+        return dx
+
+
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.loss = None  # loss
+        self.y = None  # output of softmax
+        self.t = None  # teacher data (one-hot vector)
+
+    def forward(self, x, t):
+        # x's shape is (batch_size, 10)
+        # t's shape is (batch_size, 10)
+        # y's shape is (batch_size, 10)
+        self.t = t
+        self.y = softmax(x)
+        # loss shape is (batch_size, 1)
+        self.loss = cross_entropy_error(self.y, self.t)
+
+        return self.loss
+
+    def backward(self, dout=1):
+        batch_size = self.t.shape[0]  # number of data in a batch
+        # q: why do we divide by batch_size?
+        # a: because we want to calculate the average of loss
+        dx = (self.y - self.t) / batch_size
+        # dx's shape is (batch_size, 10)
         return dx
