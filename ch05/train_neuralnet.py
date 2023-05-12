@@ -49,4 +49,4 @@ for i in range(iters_num):
         test_acc = network.accuracy(x_test, t_test)
         train_acc_list.append(train_acc)
         test_acc_list.append(test_acc)
-        print(train_acc, test_acc)
+        print(train_loss_list[-1], train_acc, test_acc)
