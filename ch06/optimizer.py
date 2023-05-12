@@ -27,3 +27,25 @@ class Momentum:
         for key in params.keys():
             self.v[key] = self.momentum * self.v[key] - self.lr * grads[key]
             params[key] += self.v[key]
+
+
+class AdaGrad:
+    """
+    パラメータの要素ごとに、学習係数を調整していくモデル
+    勾配が大きいほど、より早く学習係数が小さくなる
+    """
+
+    def __init__(self, lr=0.01):
+        self.lr = lr
+        self.h = None
+
+    def update(self, params, grads):
+        if self.h is None:
+            self.h = {}
+            for key, val in params:
+                self.h[key] = np.zeros_like(val)
+
+        for key in params.keys():
+            self.h[key] += grads[key] * grads[key]
+            # 0除算を防ぐために、10e-7を足す
+            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
