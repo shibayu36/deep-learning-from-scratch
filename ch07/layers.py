@@ -16,6 +16,15 @@ class Convolution:
         self.stride = stride
         self.pad = pad
 
+        # 中間データ（backward時に使用）
+        self.x = None
+        self.col = None
+        self.col_W = None
+
+        # 重み・バイアスパラメータの勾配
+        self.dW = None
+        self.db = None
+
     def forward(self, x):
         FN, C, FH, FW = self.W.shape
         N, C, H, W = x.shape
@@ -27,6 +36,12 @@ class Convolution:
         out = np.dot(col, col_W) + self.b
 
         out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
+
+        self.x = x
+        self.col = col
+        self.col_W = col_W
+
+        return out
 
     def backward(self, dout):
         FN, C, FH, FW = self.W.shape
@@ -50,6 +65,9 @@ class Pooling:
         self.stride = stride
         self.pad = pad
 
+        self.x = None
+        self.arg_max = None
+
     def forward(self, x):
         """
         x: numpy array, shape = (N, C, H, W)
@@ -63,10 +81,14 @@ class Pooling:
         col = col.reshape(-1, self.pool_h * self.pool_w)
 
         # 2. max
+        arg_max = np.argmax(col, axis=1)
         out = np.max(col, axis=1)
 
         # 3. reshape
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+
+        self.x = x
+        self.arg_max = arg_max
 
         return out
 
