@@ -41,6 +41,7 @@ class Convolution:
         self.col = col
         self.col_W = col_W
 
+        # out: (N, FN, out_h, out_w)
         return out
 
     def backward(self, dout):
@@ -90,6 +91,8 @@ class Pooling:
         self.x = x
         self.arg_max = arg_max
 
+        # if pool window is 2x2, out_h =
+        # out: (N, C, out_h, out_w)
         return out
 
     def backward(self, dout):
